@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- <link rel="stylesheet" href="css/boostrap.min.css">    CSS only
+<link rel="stylesheet" href="css/main.css">     -->
+ 
+<title>Task Manager</title>
+<body>
+    {% include 'navbar.html' %}
+    {% block content %}
+    <h2>{{task.title}}</h2>
+
+    <div>
+       <h3>{{activities}}</h3>
+   </div>
+   <hr>
+   
+   <div>
+       <a href="{% url 'addactivities' %}">Add Activity</a>
+       <a href="{% url 'editactivities' %}">Edit Activity</a>
+   </div>
+    {% endblock %}
+</body>
+</html>
