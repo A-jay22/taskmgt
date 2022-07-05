@@ -75,8 +75,8 @@ def updatetask(request, pk):
     task = Task.objects.get(id=pk)
     addtask = AddTask(instance=task)
     if request.method =='POST':
-        task_title=request.POST.get('title')
-        task_complete=request.POST.get('complete')
+        task.title=request.POST.get('title')
+        task.complete=request.POST.get('complete')
         task.save()
         return redirect('home')
     context = {'task':task, 'addtask':addtask}
