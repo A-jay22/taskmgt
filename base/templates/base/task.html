@@ -15,13 +15,12 @@
     <h2>{{task.title}}</h2>
 
     <div>
-       <h3>{{activities}}</h3>
+       <h4>{{activities}}</h4>
    </div>
-   <hr>
+   
    
    <div>
        <a href="{% url 'addactivities' %}">Add Activity</a>
-       <a href="{% url 'editactivities' %}">Edit Activity</a>
    </div>
     {% endblock %}
 </body>

@@ -1,17 +1,42 @@
 {% extends 'main.html'%}
 {% block content %}
 <h1>Tasks</h1>
+<h2>{{user}}, You have <i>{{count}}</i> incomplete tasks</h2>
+<form method="GET">
+    <input name="q" placeholder="Search for tasks" />
+    <input type="submit" value="Search">
+</form>
+
+<div class="task-items-wrapper">
+    {% for task in tasks %}
+        <div class="task-wrapper">
+            {% if task.complete %}
+                <div class="task-title">
+                    <div class="task-complete-icon"></div>
+                    <i><s><a href="{% url 'updatetask' task.id %}">{{task}}</a></s></i>
+                </div>
+                {% else %}
+                <div class="task-title">
+                    <div class="task-incomplete-icon"></div>
+                    <a href="{% url 'updatetask' task.id %}">{{task}}</a>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
 
 <div>
-
-   
     <div>
        {% for task in tasks %}
         <div>
             <h3><a href="{% url 'task' task.id %}">{{task.title}} </a></h3>
+            <small>{{task.description}}</small>
+            <br>
+            <a href="{% url 'updatetask' task.id %}">Update</a>
+            <a href="{% url 'edittask' task.id %}">Edit</a>
             <a href="{% url 'deletetasks' task.id %}">Delete</a>
-            <a href="{% url 'edittask' task.id %}">Edit Task</a>
         </div>
+        <hr>
        {% endfor %}
     </div>
 </div> 

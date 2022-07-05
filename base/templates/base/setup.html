@@ -3,7 +3,21 @@
         {% csrf_token %}
         {{setupform.as_p}}
         <input type="submit" value="Submit">
-    </form>
+    </form>  
 </div>
 
 
+<!-- <div class="card-body">
+    <form method="POST">
+        {% csrf_token %}
+        <label> {{form.username.label}}</label>
+        {{form.username}}
+
+        <label> {{form.password1.label}} </label>
+        {{form.password1}}
+
+        <label> {{form.password2.label}} </label>
+        {{form.password2}}
+        <input class="button" type="submit" value="Setup">
+    </form>
+</div> -->

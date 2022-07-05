@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout  
 from django.contrib.auth.decorators import login_required 
 from django.contrib.auth.forms import UserCreationForm
@@ -56,20 +57,35 @@ def setup(request):
 
 def home(request):
     print(request.user.id)
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    tasks = Task.objects.filter(title__icontains=q)
     tasks = Task.objects.filter(user=request.user.id)
-    context = {'tasks': tasks}
+    count = Task.objects.filter(complete=False).count()
+    context = {'tasks': tasks,'count':count }
     return render(request, 'base/home.html', context)  
 
 def task(request, pk):
     task = Task.objects.get(id=pk)
     activities = Activities.objects.filter(task = Task.objects.get(id=pk))
-    context = {'task': task, 'activities':activities } 
+    context = {'task': task, 'activities':activities} 
     return render(request, 'base/task.html', context)
+
+
+def updatetask(request, pk):
+    task = Task.objects.get(id=pk)
+    addtask = AddTask(instance=task)
+    if request.method =='POST':
+        task_title=request.POST.get('title')
+        task_complete=request.POST.get('complete')
+        task.save()
+        return redirect('home')
+    context = {'task':task, 'addtask':addtask}
+    return render(request, 'base/addtasks.html', context)
 
 def activities(request, pk):
     activities = Activities.objects.filter(task = Task.objects.get(id=pk))
-    context = {'activities':activities } 
-    return render(request, 'base/task.html', context)
+    # context = {'activities':activities } 
+    return render(request, 'base/task.html', activities)
 
 @login_required(login_url='index')
 def addactivities(request):
@@ -77,11 +93,9 @@ def addactivities(request):
     if request.method == 'POST':
         addactivities = AddActivities(request.POST)
         if addactivities.is_valid():
-            #addt ask.user = request.user
-            # print(dir(request.user), dir(addtask))
             addactivities.save()
-            return redirect('task')    
-    context = {'addactivities': addactivities}
+            return redirect('home')    
+    context = {'addactivities': addactivities, 'task':task}
     return render(request, 'base/addactivities.html', context)
 
 @login_required(login_url='index')
@@ -113,8 +127,6 @@ def addtasks(request):
     if request.method == 'POST':
         addtask = AddTask(request.POST)
         if addtask.is_valid():
-            addtask.user = request.user
-            # print(dir(request.user), dir(addtask))
             addtask.save()
             return redirect('home')    
     context = {'addtask': addtask}
@@ -127,6 +139,13 @@ def deletetasks(request, pk):
         task.delete()
         return redirect('home')
     return render(request,'base/deletetasks.html', {'obj':task})
+
+def deleteactivities(request, pk):
+    activities=Activities.objects.get()
+    if request.method == 'POST':
+        activities.delete()
+        return redirect('task')
+    return render(request,'base/deleteactivities.html', {'obj':task})
 
 def logoutPage(request):
     return render(request, 'base/index.html')
