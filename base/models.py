@@ -3,14 +3,14 @@ from django.contrib.auth.models import User
 
 
 class Task(models.Model):
-    user =  models.ForeignKey(User, on_delete=models.CASCADE)
+    user =  models.ForeignKey(User, on_delete=models.CASCADE,)
     title = models.CharField(max_length=45, null=False)
     description = models.TextField(null=False)
     complete = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     
 
-    class Meta:
+    class Meta:    
         ordering = ['-created']
 
 

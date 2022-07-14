@@ -1,14 +1,33 @@
 {% extends 'main.html' %}
 {% block content %}
 
+
+
 <div>
     <form method="POST" action="">
         {% csrf_token %}
-        
         {{addtask.as_p}}
+        <input type="submit" value="Submit">
+    </form>  
+</div>
 
+<!-- <div>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Task:</label>
+            <input type="text" name="task"/>
+            <br>
+            <br>
+        <label>Description:</label>
+            <input type="text" name="description"/>
+            <br>
+            <br>
+        <label>Complete:</label>
+            <input type="checkbox" name="complete"/>
+            <hr>
         <input type="submit" value="Submit">
     </form>
+</div> -->
 
-</div>
+
 {% endblock content %}

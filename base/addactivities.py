@@ -4,4 +4,4 @@ from . models import Activities
 class AddActivities(ModelForm):
     class Meta:
         model = Activities
-        fields = '__all__'
+        fields ='__all__'

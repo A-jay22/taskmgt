@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required 
 from django.contrib.auth.forms import UserCreationForm
 from . models import Task, Activities
-from . addtask import AddTask
+from . forms import TaskForm
 from . addactivities import AddActivities
 
 # Create your views here
@@ -58,9 +58,8 @@ def setup(request):
 def home(request):
     print(request.user.id)
     q = request.GET.get('q') if request.GET.get('q') != None else ''
-    tasks = Task.objects.filter(title__icontains=q)
     tasks = Task.objects.filter(user=request.user.id)
-    count = Task.objects.filter(complete=False).count()
+    count = Task.objects.filter(complete=False, user=request.user.id).count()
     context = {'tasks': tasks,'count':count }
     return render(request, 'base/home.html', context)  
 
@@ -100,7 +99,7 @@ def addactivities(request):
 
 @login_required(login_url='index')
 def edittask(request, pk):
-    task=Task.objects.get(id=pk)
+    task=Task.objects.get(id=pk)  
     edittasks = AddTask()
     if request.method == 'POST':
         edittasks = AddTask(request.POST)
@@ -123,14 +122,26 @@ def editactivities(request, pk):
 
 @login_required(login_url='index')
 def addtasks(request):
-    addtask = AddTask()
+    user = request.user
+    addtask = TaskForm(initial={'user': user})
     if request.method == 'POST':
-        addtask = AddTask(request.POST)
+        addtask = TaskForm(request.POST)
         if addtask.is_valid():
+            addtask.user = request.user
+            #print(addtask.user)
             addtask.save()
             return redirect('home')    
-    context = {'addtask': addtask}
+    context = {'addtask': addtask, 'user': user}
     return render(request, 'base/addtasks.html', context)
+
+# def addt(request):
+#     if request.method == 'POST':
+#         form = Tform(request.POST)
+#         if form.is_valid():
+#              form.save()
+#              return redirect('home')
+#     context = {'form': form}
+#     return render(request, 'base/addtasks.html', context)
 
 @login_required(login_url='index')
 def deletetasks(request, pk):
